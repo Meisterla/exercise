@@ -39,36 +39,41 @@ def within():
 def game(lst):
     range_min = lst[0]
     range_max = lst[1]
+    count = 0
+    done = False
 
     print(f'Think of a number between {range_min} and {range_max}!')
 
-    # range_min -= 1
-    # range_max += 1
-
-    done = False
     while not done:
         range_avg = (range_max + range_min) // 2
         result = input(f'Is your number greater (>), equal (=), or less (<) than {range_avg}?\n'
                        f'Please answer <,=, or >!')
         if result == '>':
             range_min = range_avg + 1
+            count += 1
         elif result == '<':
             range_max = range_avg - 1
+            count += 1
         elif result == '=':
             print('I have guessed it!')
+            count += 1
             done = True
         else:
             print('The information you entered is incorrect, please answer again.')
             continue
-        if range_avg == range_max or range_avg == range_min:
-            print('You are lying, please answer again.')
-            continue
+
+        if range_min > range_max:
+            print('You are lying.')
+            break
+
+    return count
 
 
 def main():
     print('Please give me a range, it should be two integers are separated by a comma (e.g. “1,100”).')
     lst_result = within()
-    game(lst_result)
+    count = str(game(lst_result))
+    print(f'I needed {count} steps!')
 
 
 main()
