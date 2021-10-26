@@ -41,11 +41,10 @@ def game(lst):
     range_min = lst[0]
     range_max = lst[1]
     count = 0
-    done = False
 
     print(f'Think of a number between {range_min} and {range_max}!')
 
-    while not done:
+    while True:
         range_avg = (range_max + range_min) // 2
         result = input(f'Is your number greater (>), equal (=), or less (<) than {range_avg}?\n'
                        f'Please answer <,=, or >!')
@@ -58,7 +57,7 @@ def game(lst):
         elif result == '=':
             print('I have guessed it!')
             count += 1
-            done = True
+            break
         else:
             print('The information you entered is incorrect, please answer again.')
             continue
