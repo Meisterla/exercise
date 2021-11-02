@@ -1,13 +1,23 @@
-def queen(A, cur=0):
-    if cur == len(A):
-        print(A)
+import numpy as np
+
+result = []
+
+
+def queen(n, cur=0):
+    if cur == len(n):
+        print(n)
         return 0
-    for col in range(len(A)):
-        A[cur], flag = col, True
+    for col in range(len(n)):
+        n[cur] = col
+        flag = True
         for row in range(cur):
-            if A[row] == col or abs(col - A[row]) == cur - row:
+            if n[row] == col or col - n[row] == cur - row or col - n[row] == row - cur:
                 flag = False
                 break
         if flag:
-            queen(A, cur+1)
-queen([None]*8)
+            queen(n, cur+1)
+
+
+queen([None]*4)
+
+#print(result)
