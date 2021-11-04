@@ -24,7 +24,6 @@ def conflict(pos, chess):
 def solve(n, chess):
     if len(chess) == n:
         result.append(chess)
-        #printgrip(chess, n)
 
     else:
         for pos in range(n):
