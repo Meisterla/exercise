@@ -1,5 +1,6 @@
-grid = [0, 0, 0, 0, 0, 0, 0, 0]
-n = 8
+grid = [0, 0, 0, 0, 0, 0, 0, 0]  # Create a list to collect results, the index of each element as row,
+# the value of each element as column.
+n = 8  # Set the number of rows, columns and queens.
 
 
 def possible(col, row):
@@ -23,12 +24,12 @@ def print_grip(grid, n):
     input('More?')
 
 
-def queen(row):  # row:当前行，col:每一行皇后的位置 n为总行数
-    global grid
+def queen(row):
+    global grid  # Use global variables.
     global n
-    if row == n:
-        print_grip(grid, n)  # 到最后一行，打印结果
-        return
+    if row == n:  # If the queen position in the last row is determined, print it.
+        print_grip(grid, n)  # Print it as a matrix.
+        return  # Return and find the next case recursively.
     for row_position in range(n):
         grid[row] = row_position  # row_position皇后所在列的位置
         if possible(grid, row):
@@ -36,7 +37,7 @@ def queen(row):  # row:当前行，col:每一行皇后的位置 n为总行数
 
 
 def solve():
-    queen(0)
+    queen(0)  # Execute queen function, set the position of the Queen from the first row.
 
 
-solve()
+solve()  # Execute main function.
