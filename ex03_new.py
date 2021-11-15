@@ -13,14 +13,14 @@ def possible(col, row):
 
 def print_grip(grid, n):
     for row in range(n):
-        line = ""
+        line = ''
         for column in range(n):
             if grid[row] == column:
-                line += " Q "
+                line += 'Q '
             else:
-                line += " * "
+                line += '. '
         print(line)
-    print('\n')
+    input('More?')
 
 
 def queen(row):  # row:当前行，col:每一行皇后的位置 n为总行数
@@ -35,4 +35,8 @@ def queen(row):  # row:当前行，col:每一行皇后的位置 n为总行数
             queen(row + 1)
 
 
-queen(0)
+def solve():
+    queen(0)
+
+
+solve()

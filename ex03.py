@@ -1,5 +1,6 @@
 import numpy as np
 
+
 result = []
 
 
@@ -43,13 +44,4 @@ for i in result:
         continue
     else:
         break
-
-
-def welcome():
-    num = input('Please tell me the number of the queens.')
-    solve(num, [])
-    for i in result:
-        printgrip(i, num)
-        more = input('More?')
-
 
