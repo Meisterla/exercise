@@ -16,7 +16,7 @@ class Directory(Tree):
         self.owner = "default"
 
     def __str__(self):
-        return f'"{self.directory_name}"'
+        return f'"{self.directory_name},{self.files}"'
 
     def chown(self, new_owner):
         self.owner = new_owner
@@ -34,7 +34,7 @@ class PlainFile(Tree):
         self.owner = new_owner
 
 
-file = PlainFile("boot.exe")
+# file = PlainFile("boot.exe")
 # folder = Directory("Downloads", [])
 root = Directory("root",
                  [PlainFile("boot.exe"),
@@ -45,4 +45,17 @@ root = Directory("root",
                              Directory("isaac", [PlainFile("gatos.jpg")])])])
 
 
-print(file)
+print(root)
+
+
+# class FileSystem:
+#     def __init__(self, directory):
+#         self.directory = directory
+#
+#     def pwd(self):
+#         print("'" + self.directory.directory_name + "'")
+#
+#
+# fs = FileSystem(root)
+#
+# fs.pwd()
