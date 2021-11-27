@@ -15,8 +15,8 @@ class Directory(Tree):
         self.files = files
         self.owner = "default"
 
-    def __str__(self):
-        return f'"{self.directory_name},{self.files}"'
+    def __repr__(self):
+        return f'Directory({self.directory_name},{self.files}'
 
     def chown(self, new_owner):
         self.owner = new_owner
@@ -27,7 +27,7 @@ class PlainFile(Tree):
         self.file_name = file_name
         self.owner = "default"
 
-    def __str__(self):
+    def __repr__(self):
         return f'PlainFile("{self.file_name}")'
 
     def chown(self, new_owner):
