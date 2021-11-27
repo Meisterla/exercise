@@ -18,8 +18,14 @@ class Directory(Tree):
     def __repr__(self):
         return f'Directory({self.directory_name},{self.files}'
 
+    def __str__(self):
+        return self.directory_name
+
     def chown(self, new_owner):
         self.owner = new_owner
+
+    def ls(self):
+        print(self)
 
 
 class PlainFile(Tree):
@@ -34,8 +40,8 @@ class PlainFile(Tree):
         self.owner = new_owner
 
 
-# file = PlainFile("boot.exe")
-# folder = Directory("Downloads", [])
+file = PlainFile("boot.exe")
+folder = Directory("Downloads", [])
 root = Directory("root",
                  [PlainFile("boot.exe"),
                   Directory("home",
@@ -45,7 +51,8 @@ root = Directory("root",
                              Directory("isaac", [PlainFile("gatos.jpg")])])])
 
 
-print(root)
+# print(root)
+root.ls()
 
 
 # class FileSystem:
