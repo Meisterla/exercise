@@ -5,11 +5,7 @@
 """
 
 
-class Tree:
-    pass
-
-
-class Directory(Tree):
+class Directory:
     def __init__(self, directory_name, files):
         self.directory_name = directory_name
         self.files = files
@@ -18,17 +14,21 @@ class Directory(Tree):
     def __repr__(self):
         return f'Directory({self.directory_name},{self.files}'
 
-    def __str__(self):
-        return self.directory_name
-
     def chown(self, new_owner):
         self.owner = new_owner
 
-    def ls(self):
-        print(self)
+    def ls(self, retract="  "):
+        print(self.directory_name)
+        for i in self.files:
+            try:
+                i.files
+            except AttributeError:
+                print(retract + str(i)[11:-2])
+            else:
+                i.ls(retract + "  ")
 
 
-class PlainFile(Tree):
+class PlainFile:
     def __init__(self, file_name):
         self.file_name = file_name
         self.owner = "default"
@@ -38,6 +38,9 @@ class PlainFile(Tree):
 
     def chown(self, new_owner):
         self.owner = new_owner
+
+    def pri(self):
+        return self.file_name
 
 
 file = PlainFile("boot.exe")
@@ -51,18 +54,18 @@ root = Directory("root",
                              Directory("isaac", [PlainFile("gatos.jpg")])])])
 
 
-# print(root)
+print(root)
 root.ls()
 
 
-# class FileSystem:
-#     def __init__(self, directory):
-#         self.directory = directory
-#
-#     def pwd(self):
-#         print("'" + self.directory.directory_name + "'")
-#
-#
-# fs = FileSystem(root)
-#
-# fs.pwd()
+class FileSystem:
+    def __init__(self, directory):
+        self.directory = directory
+
+    def pwd(self):
+        print("'" + self.directory.directory_name + "'")
+
+
+fs = FileSystem(root)
+
+fs.pwd()
