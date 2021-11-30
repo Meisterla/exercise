@@ -95,7 +95,6 @@ class FileSystem:
         if directory == "..":
             for i in self.info_dict:
                 for j in self.info_dict[i]:
-                    # print(j)
                     try:
                         j.files
                     except AttributeError:
@@ -133,8 +132,49 @@ class FileSystem:
             self.files.append('PlainFile("' + name + '")')
 
     def rm(self, name):
-        pass
+        if name not in self.info_dict:
+            for i in self.files:
+                try:
+                    i.file_name
+                except AttributeError:
+                    continue
+                else:
+                    if name == i.file_name:
+                        self.files.pop(self.files.index(i))
+        else:
+            for i in self.files:
+                try:
+                    i.files
+                except AttributeError:
+                    continue
+                else:
+                    if name == i.directory_name:
+                        if not self.files[self.files.index(i)].files:
+                        # if self.files[self.files.index(i)].files == []:
+                            self.files.pop(self.files.index(i))
+                        else:
+                            print("Sorry, the directory is not empty.")
 
+    def find(self, name):
+        path = self.directory_name + "/"
+        if name not in self.info_dict:
+            f_file_list = self.fun_find("f_file", name)
+            for i in f_file_list:
+                path += i + "/"
+        path = path[:-1]
+        print(path)
+
+    def fun_find(self, tp, name):
+        if tp == "f_file":
+            f_file_list = []
+            f_file_temp = str(self.info_dict[self.directory_name])
+            f_file_temp = f_file_temp.replace("Directory(", "").replace(" ", "").replace("[", "").replace("]", "")\
+                .replace('PlainFile("', "").replace('")', "")
+            for i in f_file_temp.split(","):
+                if i in self.info_dict or i == name:
+                    f_file_list.append(i)
+            f_file_list = f_file_list[:f_file_list.index(name) + 1]
+            return f_file_list
 
 
 print("------------------------------")
@@ -152,6 +192,6 @@ fs = FileSystem(root)
 # fs.cd("test")
 # fs.mkdir('boot.exe2')
 
-fs.cd("home")
-fs.cd("..")
+# fs.cd("home")
+# fs.cd("..")
 
