@@ -161,7 +161,7 @@ class FileSystem:
         if name in p_file_list:
             print("The file has already exist within the working directory.")
         else:
-            self.files.append(Directory(name, []))  # Add new plain file
+            self.files.append(Directory(name, [], owner))  # Add new plain file
             # self.info_dict[name] = []
             self.fun_info_dict(self.files)
 
