@@ -58,9 +58,9 @@ class PlainFile(File):
         self.owner = new_owner
 
 
-# print("Testing question 1")
-# file = PlainFile("boot.exe")  # Instantiate a plain file
-# folder = Directory("Downloads", [])  # Instantiate a directory
+print("Testing question 1")
+file = PlainFile("boot.exe")  # Instantiate a plain file
+folder = Directory("Downloads", [])  # Instantiate a directory
 root = Directory("root",
                  [PlainFile("boot.exe"),
                   Directory("home",
@@ -68,19 +68,19 @@ root = Directory("root",
                                        [PlainFile("hunde.jpg"),
                                         PlainFile("quatsch.txt")]),
                              Directory("isaac", [PlainFile("gatos.jpg")])])])  # Instantiate a plain file
-# print("-------------------------------------------------------------")
-# print("Testing question 2")
-# print(root)
-# print("-------------------------------------------------------------")
-# print("Testing question 3")
-# print(f'file.owner: {file.owner}; folder: {folder.owner}')
-# file.chown("root")
-# folder.chown("isaac")
-# print(f'file.owner: {file.owner}; folder: {folder.owner}')
-# print("-------------------------------------------------------------")
-# print("Testing question 4")
-# root.ls()
-# print("-------------------------------------------------------------")
+print("-------------------------------------------------------------")
+print("Testing question 2")
+print(root)
+print("-------------------------------------------------------------")
+print("Testing question 3")
+print(f'file.owner: {file.owner}; folder: {folder.owner}')
+file.chown("root")
+folder.chown("isaac")
+print(f'file.owner: {file.owner}; folder: {folder.owner}')
+print("-------------------------------------------------------------")
+print("Testing question 4")
+root.ls()
+print("-------------------------------------------------------------")
 
 
 class FileSystem:
@@ -139,13 +139,14 @@ class FileSystem:
             self.directory_name = directory
             self.files = self.info_dict[directory]  # go to the target directory through match information from
             # info_dict
+        self.fun_info_dict(self.files)
 
     def create_file(self, name):  # Add create file method
         if name in self.info_dict:
             print("The directory has already exist within the working directory.")
         else:
-            self.files.append(Directory(name, []))  # Add an empty directory
-            self.info_dict[name] = []  # Add new directory in the info_dict
+            self.files.append(PlainFile(name))  # Add an empty directory
+            self.fun_info_dict(self.files)
 
     def mkdir(self, name, owner="default"):  # Add mkdir method
         p_file_list = []
@@ -160,7 +161,9 @@ class FileSystem:
         if name in p_file_list:
             print("The file has already exist within the working directory.")
         else:
-            self.files.append('PlainFile("' + name + '")')  # Add new plain file
+            self.files.append(Directory(name, []))  # Add new plain file
+            # self.info_dict[name] = []
+            self.fun_info_dict(self.files)
 
     def rm(self, name):  # Add rm method
         if name not in self.info_dict:  # Check whether the name is a directory or a file by checking whether the name
@@ -235,3 +238,40 @@ fs.mkdir("test")  # the owner of the directory should be 'default' as not indica
 fs.cd("test")
 fs.create_file("test.txt")
 fs.ls()
+print("-------------------------------------------------------------")
+print("Testing question 5e:  dot dot")
+root = Directory("root", [], owner="root")
+fs = FileSystem(root)
+fs.create_file("boot.exe")  # when creating a file we do not need to indicate owner, it will be the same as
+# the working directory
+fs.mkdir("test")
+fs.cd("test")
+fs.create_file("test.txt")
+fs.cd("..")
+fs.mkdir("home", owner="root")
+fs.cd("home")
+fs.mkdir("thor", owner="thor")
+fs.mkdir("isaac", owner="isaac")
+fs.cd("thor")
+fs.create_file("hunde.jpg")
+fs.create_file("quatsch.txt")
+fs.cd("..")
+fs.cd("isaac")
+fs.create_file("gatos.jpg")
+fs.cd("..")
+fs.cd("..")
+fs.ls()
+print("-------------------------------------------------------------")
+print("Testing question 5f:  rm")
+fs.rm("test")  # shouldn't work!
+fs.cd("test")
+fs.rm("test.txt")
+fs.cd("..")
+fs.rm("test")
+fs.ls()
+print("-------------------------------------------------------------")
+print("Testing question 5e:  find")
+fs.find("gatos.jpg")
+fs.cd("home")
+fs.find("boot.exe")  # shouldn't find it!
+fs.find("thor")  # should print the relative path "home/thor"
