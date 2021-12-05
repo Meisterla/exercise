@@ -6,26 +6,33 @@
 
 
 class File:
-    def __init__(self, owner="default"):
-        self.owner = owner
-
-    def chown(self, new_owner):
-        self.owner = new_owner
+    pass
 
 
 class Directory(File):
-    def __init__(self, directory_name, files):
+    """
+    Directory class
+    """
+    def __init__(self, directory_name, files, owner="default"):
+        """
+        :param directory_name: name of the directory
+        :param files: file for details, it is a list
+        """
         self.directory_name = directory_name
         self.files = files
+        self.owner = owner
 
-    def __repr__(self):
+    def __repr__(self):  # Output method.
         return f'Directory({self.directory_name},{self.files}'
 
-    def ls(self, retract=""):
+    def chown(self, new_owner):  # Owner updated method
+        self.owner = new_owner
+
+    def ls(self, retract=""):  # Recursively traverses directories and files
         print(retract + self.directory_name)
-        retract += "    "
+        retract += "    "  # Define the retract
         for i in self.files:
-            try:
+            try:  # If i is a directory,recurse, else print it
                 i.files
             except AttributeError:
                 print(retract + str(i)[11:-2])
@@ -34,53 +41,76 @@ class Directory(File):
 
 
 class PlainFile(File):
-    def __init__(self, file_name):
+    """
+    PlainFile class
+    """
+    def __init__(self, file_name, owner="default"):
+        """
+        :param file_name: file name
+        """
         self.file_name = file_name
+        self.owner = owner
 
     def __repr__(self):
         return f'PlainFile("{self.file_name}")'
 
+    def chown(self, new_owner):
+        self.owner = new_owner
 
-file = PlainFile("boot.exe")
-folder = Directory("Downloads", [])
+
+# print("Testing question 1")
+# file = PlainFile("boot.exe")  # Instantiate a plain file
+# folder = Directory("Downloads", [])  # Instantiate a directory
 root = Directory("root",
                  [PlainFile("boot.exe"),
                   Directory("home",
                             [Directory("thor",
                                        [PlainFile("hunde.jpg"),
                                         PlainFile("quatsch.txt")]),
-                             Directory("isaac", [PlainFile("gatos.jpg")])])])
-
-
-print(root)
+                             Directory("isaac", [PlainFile("gatos.jpg")])])])  # Instantiate a plain file
+# print("-------------------------------------------------------------")
+# print("Testing question 2")
+# print(root)
+# print("-------------------------------------------------------------")
+# print("Testing question 3")
+# print(f'file.owner: {file.owner}; folder: {folder.owner}')
+# file.chown("root")
+# folder.chown("isaac")
+# print(f'file.owner: {file.owner}; folder: {folder.owner}')
+# print("-------------------------------------------------------------")
+# print("Testing question 4")
 # root.ls()
+# print("-------------------------------------------------------------")
 
 
 class FileSystem:
     def __init__(self, directory):
+        """
+        :param directory: A directory instantiation
+        """
         self.directory = directory
-        self.directory_name = self.directory.directory_name
-        self.files = self.directory.files
-        self.info_dict = {self.directory_name: self.files}
-        self.fun_info_dict(self.files)
+        self.directory_name = self.directory.directory_name  # directory_name equal the name of the instantiation
+        self.files = self.directory.files  # files equal the file datails of the instantiation
+        self.info_dict = {self.directory_name: self.files}  # Create a dict to store the directory_name
+        self.fun_info_dict(self.files)  # Add directory_name
 
-    def fun_info_dict(self, files):
+    def fun_info_dict(self, files):  # Add directory_name method
         for i in files:
             try:
                 i.files
             except AttributeError:
                 continue
             else:
-                self.info_dict[i.directory_name] = i.files
-                self.fun_info_dict(i.files)
+                self.info_dict[i.directory_name] = i.files  # key: directory_name, value:files
+                self.fun_info_dict(i.files)  # recursion
 
     def __repr__(self):
         return str(self.directory_name) + str(self.files)
 
-    def pwd(self):
+    def pwd(self):  # Print current directory
         print("'" + self.directory_name + "'")
 
-    def ls(self, retract=""):
+    def ls(self, retract=""):  # Recursively traverses directories and files
         print(retract + self.directory_name)
         retract += "    "
         for i in self.files:
@@ -91,8 +121,8 @@ class FileSystem:
             else:
                 i.ls(retract)
 
-    def cd(self, directory):
-        if directory == "..":
+    def cd(self, directory):  # Add cd method
+        if directory == "..":  # If input "..", go back to a parent directory through match information from info_dict
             for i in self.info_dict:
                 for j in self.info_dict[i]:
                     try:
@@ -100,98 +130,108 @@ class FileSystem:
                     except AttributeError:
                         continue
                     else:
-                        if self.directory_name == j.directory_name:
+                        if self.directory_name == j.directory_name:  # Match by directory_name
                             self.directory_name = i
                             self.files = self.info_dict[i]
-        elif directory not in self.info_dict:
+        elif directory not in self.info_dict:  # Print not exist
             print("The directory does not exist!")
         else:
             self.directory_name = directory
-            self.files = self.info_dict[directory]
+            self.files = self.info_dict[directory]  # go to the target directory through match information from
+            # info_dict
 
-    def create_file(self, name):
+    def create_file(self, name):  # Add create file method
         if name in self.info_dict:
             print("The directory has already exist within the working directory.")
         else:
-            self.files.append(Directory(name, []))
-            self.info_dict[name] = []
+            self.files.append(Directory(name, []))  # Add an empty directory
+            self.info_dict[name] = []  # Add new directory in the info_dict
 
-    def mkdir(self, name):
+    def mkdir(self, name, owner="default"):  # Add mkdir method
         p_file_list = []
         for i in self.files:
             try:
                 i.files
             except AttributeError:
-                p_file_list.append(i.file_name)
+                p_file_list.append(i.file_name)  # Store existing file names into a collection and check if they exist
             else:
                 continue
 
         if name in p_file_list:
             print("The file has already exist within the working directory.")
         else:
-            self.files.append('PlainFile("' + name + '")')
+            self.files.append('PlainFile("' + name + '")')  # Add new plain file
 
-    def rm(self, name):
-        if name not in self.info_dict:
+    def rm(self, name):  # Add rm method
+        if name not in self.info_dict:  # Check whether the name is a directory or a file by checking whether the name
+            # is in the dictionary
             for i in self.files:
-                try:
+                try:  # If i is a plain file
                     i.file_name
                 except AttributeError:
                     continue
                 else:
                     if name == i.file_name:
-                        self.files.pop(self.files.index(i))
+                        self.files.pop(self.files.index(i))  # Move file through index
         else:
             for i in self.files:
                 try:
-                    i.files
+                    i.files  # If i is a directory
                 except AttributeError:
                     continue
                 else:
                     if name == i.directory_name:
                         if not self.files[self.files.index(i)].files:
                         # if self.files[self.files.index(i)].files == []:
-                            self.files.pop(self.files.index(i))
+                            self.files.pop(self.files.index(i))  # Move directory through index
                         else:
                             print("Sorry, the directory is not empty.")
 
-    def find(self, name):
+    def find(self, name):  # Add find method
         path = self.directory_name + "/"
-        if name not in self.info_dict:
-            f_file_list = self.fun_find("f_file", name)
-            for i in f_file_list:
-                path += i + "/"
-        path = path[:-1]
+        files = self.files
+        path = self.fun_find(path, files, name)  # Execute
         print(path)
 
-    def fun_find(self, tp, name):
-        if tp == "f_file":
-            f_file_list = []
-            f_file_temp = str(self.info_dict[self.directory_name])
-            f_file_temp = f_file_temp.replace("Directory(", "").replace(" ", "").replace("[", "").replace("]", "")\
-                .replace('PlainFile("', "").replace('")', "")
-            for i in f_file_temp.split(","):
-                if i in self.info_dict or i == name:
-                    f_file_list.append(i)
-            f_file_list = f_file_list[:f_file_list.index(name) + 1]
-            return f_file_list
+    def fun_find(self, path, files, name):  # Implement find method
+        for i in files:
+            try:  # Check whether it is a file or a directory
+                i.file_name
+            except AttributeError:
+                if name == i.directory_name:
+                    return path + name  # Return directory path
+                else:
+                    path = path + i.directory_name + "/"
+                    temp = self.fun_find(path, i.files, name)
+                    if temp:
+                        return temp
+                    path = path[:-len(i.directory_name)-1]
+            else:
+                if name == i.file_name:
+                    return path + name  # Return file path
+        return False
 
 
-print("------------------------------")
-
+print("Testing question 5a: basic filesystem and pwd")
 fs = FileSystem(root)
-
-# fs.pwd()
-# fs.ls()
-
-# fs.cd("home")
-# fs.pwd()
-# fs.ls()
-
-# fs.create_file("test")
-# fs.cd("test")
-# fs.mkdir('boot.exe2')
-
-# fs.cd("home")
-# fs.cd("..")
-
+fs.pwd()
+print("-------------------------------------------------------------")
+print("Testing question 5b: ls in working directory")
+fs.ls()
+print("-------------------------------------------------------------")
+print("Testing question 5c: cd")
+# if you try to move to a non existing directory or to a file,
+# the method should complain:
+fs.cd("casa")
+# But you can move to an existing directory in the working directory.
+fs.cd("home")
+# if we now do ls(), you should only see the content in home:
+fs.ls()
+print("-------------------------------------------------------------")
+print("Testing question 5d:  mkdir and create file")
+fs = FileSystem(root)  # re-initialise fs
+fs.mkdir("test")  # the owner of the directory should be 'default' as not indicated.  fs.mkdir("test","isaac")
+# would set the owner to isaac
+fs.cd("test")
+fs.create_file("test.txt")
+fs.ls()
